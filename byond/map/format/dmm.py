@@ -3,7 +3,14 @@ from byond.utils import getElapsed, do_profile
 # from byond.map import Tile, MapLayer
 from byond.map.format.base import BaseMapFormat, MapFormat
 import os, sys, logging, itertools, shutil, collections, math
-from time import clock
+
+# clock was removed in 3.8, but perf_counter was only added in 3.3
+if sys.version_info[0] >= 3 and sys.version_info[1] >= 3:
+    from time import perf_counter
+else:
+    from time import clock
+    def perf_counter():
+        return clock()
 
 ID_ENCODING_TABLE = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 IET_SIZE = len(ID_ENCODING_TABLE)
@@ -115,7 +122,7 @@ class DMMFormat(BaseMapFormat):
                 width = 0
                 height = 0
                 
-                start = clock()
+                start = perf_counter()
                 #print(log_prefix+' START z={}'.format(z))
                 continue
             if line.strip() == '"}':
@@ -438,12 +445,12 @@ class DMMFormat(BaseMapFormat):
         self.dump_inherited = kwargs.get('inherited', False)
         
         # Preprocess and assign IDs.
-        start = clock()
+        start = perf_counter()
         idlen = 0
         it = self.map.Locations()
         lz = -1
         last_str = None
-        start = clock()
+        start = perf_counter()
         maxid = 0
         for tile in it:
             # print(str(tile))
@@ -451,7 +458,7 @@ class DMMFormat(BaseMapFormat):
                 if start:
                     self.log.info('  -> Took {}'.format(getElapsed(start)))
                 self.log.info(' * Consolidating level {}...'.format(it.z + 1))
-                start = clock()
+                start = perf_counter()
                 lz = it.z
             strt = tile.GetHash()  # str(tile)
             dbg = False
@@ -488,7 +495,7 @@ class DMMFormat(BaseMapFormat):
         idlen = len(self.ID2String(maxid))
         tmpfile = filename + '.tmp'
         self.log.info('Opening {} for write...'.format(tmpfile))
-        start = clock()
+        start = perf_counter()
         with open(tmpfile, 'w') as f:
             for tid in sorted(self.typeMap.keys()):
                 stid = self.ID2String(tid, idlen)
@@ -498,7 +505,7 @@ class DMMFormat(BaseMapFormat):
                 f.write('"{}" = {}\n'.format(stid, serdata))
                 self.type2TID[strt] = stid
             self.log.info(' Wrote types in {}...'.format(getElapsed(start)))
-            lap = clock()
+            lap = perf_counter()
             for z in range(len(self.map.zLevels)):
                 self.log.debug(' Writing z={}...'.format(z))
                 f.write('\n(1,1,{0}) = {{"\n'.format(z + 1))
