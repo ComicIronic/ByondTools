@@ -42,6 +42,7 @@ setup(name='BYONDToolsv3',
     long_description = (read('README.rst') + '\n\n' +
                         read('CHANGELOG.rst') + '\n\n' +
                         read('AUTHORS.rst')),
+    long_description_content_type = 'text/x-rst',
     url='https://github.com/ComicIronic/BYONDToolsv3',
     download_url='https://github.com/ComicIronic/BYONDToolsv3/tarball/v' + current_version,
     author='Comic',
