@@ -1,4 +1,10 @@
 ==================
+0.1.5 - 06/06/2020
+==================
+
+* Sped up library loading by eliminating some unnecessary imports (thanks to PJB3005 on Github).
+
+==================
 0.1.4 - 12/05/2020
 ==================
 
