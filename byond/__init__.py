@@ -5,9 +5,6 @@ Created on Sep 21, 2013
 '''
 import os
 
-from byond.map import Map, Tile, MapRenderFlags
-from byond.objtree import ObjectTree
-
 def GetFilesFromDME(dmefile='baystation12.dme', ext='.dm'):
     filesInDME=[]
     rootdir = os.path.dirname(dmefile)
